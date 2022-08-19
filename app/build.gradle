@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -69,8 +70,11 @@ dependencies {
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
     implementation 'com.facebook.stetho:stetho-js-rhino:1.5.1'
 
-    // chuck
+    // chucker
     releaseImplementation 'com.github.chuckerteam.chucker:library-no-op:3.5.2'
     debugImplementation 'com.github.chuckerteam.chucker:library:3.5.2'
+
+    //map
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
 }
