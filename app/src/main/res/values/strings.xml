@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LocationReminder</string>
+    <string name="currentLocation">Current Loc</string>
+    <string name="destinationLocation">Destination Loc</string>
 </resources>

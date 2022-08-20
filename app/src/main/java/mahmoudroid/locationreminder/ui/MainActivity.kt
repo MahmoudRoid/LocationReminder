@@ -1,14 +1,29 @@
 package mahmoudroid.locationreminder.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import mahmoudroid.locationreminder.R
+import mahmoudroid.locationreminder.databinding.ActivityMainBinding
+import mahmoudroid.locationreminder.ui.base.BaseActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
+
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        initUI()
+    }
+
+    private fun initUI() {
+        changeNotificationBarIconsColor()
+        changeStatusBarColor()
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }
