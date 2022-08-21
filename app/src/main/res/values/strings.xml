@@ -2,4 +2,9 @@
     <string name="app_name">LocationReminder</string>
     <string name="currentLocation">Current Loc</string>
     <string name="destinationLocation">Destination Loc</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="get_location">Get Location</string>
+    <string name="accept_locations_permission">Accept permissions to continue please</string>
+    <string name="can_not_determine_location">We can not determine your location</string>
 </resources>

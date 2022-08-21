@@ -10,4 +10,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="backgroundColor">#e9fff1</color>
     <color name="transparent">#00ffffff</color>
+    <color name="lightGray">#F0F3F6</color>
+
+
+    <color name="textColor">#000000</color>
+    <color name="hintColor">#727272</color>
+    <color name="uiKitErrorRedTextColor">#CD0101</color>
+
 </resources>

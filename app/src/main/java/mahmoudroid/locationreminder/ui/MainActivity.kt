@@ -1,9 +1,11 @@
 package mahmoudroid.locationreminder.ui
 
 import android.os.Bundle
+import dagger.hilt.android.AndroidEntryPoint
 import mahmoudroid.locationreminder.databinding.ActivityMainBinding
 import mahmoudroid.locationreminder.ui.base.BaseActivity
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private var _binding: ActivityMainBinding? = null

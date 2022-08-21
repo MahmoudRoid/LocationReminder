@@ -3,6 +3,7 @@ package mahmoudroid.locationreminder.ui.base
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
@@ -50,4 +51,10 @@ open class BaseFragment: Fragment() {
     }
 
     fun closeApplication() = requireActivity().finish()
+
+
+    // show message
+    fun showToast(message: String){
+        Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
+    }
 }

@@ -82,8 +82,12 @@ dependencies {
 
     //map
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-location:20.0.0'
 
     // permission
     implementation 'com.nabinbhandari.android:permissions:3.8'
+
+    // encrypted Shared Preference
+    implementation 'at.favre.lib:armadillo:1.0.0'
 
 }

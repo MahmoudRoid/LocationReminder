@@ -36,4 +36,43 @@
         <item name="android:background">@drawable/rect_white_half_top</item>
     </style>
 
+
+<!-- edit text -->
+    <style name="editTextBase" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColorHint">@color/hintColor</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textDirection">ltr</item>
+    </style>
+
+    <style name="editTextString" parent="editTextBase">
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="inputTextLayout">
+        <item name="materialThemeOverlay">
+            @style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox
+        </item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="boxStrokeErrorColor">@color/uiKitErrorRedTextColor</item>
+        <item name="android:textColorHint">@color/hintColor</item>
+        <item name="hintTextColor">@color/hintColor</item>
+        <item name="boxCornerRadiusTopEnd">16dp</item>
+        <item name="boxCornerRadiusTopStart">16dp</item>
+        <item name="endIconMode">clear_text</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:imeOptions">actionNext</item>
+    </style>
+
+
 </resources>
