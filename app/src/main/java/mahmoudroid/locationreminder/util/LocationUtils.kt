@@ -2,17 +2,22 @@ package mahmoudroid.locationreminder.util
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
+import android.location.Location
 import android.location.LocationManager
-import androidx.activity.result.IntentSenderRequest
+import android.util.Log
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 object LocationUtils {
+
 
     fun isGpsEnables(context: Context): Boolean {
         return try {
@@ -50,5 +55,21 @@ object LocationUtils {
                     LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {}
                 }
             }
+    }
+
+    fun distanceInMeter(location1: Location, location2: Location): Double{
+
+        fun deg2rad(deg: Double) = (deg * Math.PI / 180.0)
+
+        val dLat = deg2rad(location2.latitude-location1.latitude)
+        val dLon = deg2rad(location2.longitude-location1.longitude)
+        val a = sin(dLat/2) * sin(dLat/2) +
+                cos(deg2rad(location1.latitude)) * cos(deg2rad(location2.latitude)) *
+                sin(dLon/2) * sin(dLon/2)
+        val c = 2 * atan2(sqrt(a), sqrt(1-a))
+        val d = 6371 * c // Distance in km
+
+        Log.i("TAG", "distanceInMeter: ${(d * 1000).toString().take(5)}")
+        return d * 1000
     }
 }

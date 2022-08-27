@@ -3,19 +3,22 @@ package mahmoudroid.locationreminder.ui.screen.home
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import mahmoudroid.locationreminder.R
 import mahmoudroid.locationreminder.databinding.FragmentSavedCurrentLocationBinding
 import mahmoudroid.locationreminder.ui.base.BaseFragment
 import mahmoudroid.locationreminder.util.LocationUtils
 import mahmoudroid.locationreminder.util.PermissionUtils
+import mahmoudroid.locationreminder.workmanager.LocationWorker
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class SavedCurrentLocationFragment: BaseFragment() {
@@ -25,6 +28,7 @@ class SavedCurrentLocationFragment: BaseFragment() {
     //private val viewModel: SavedCurrentLocationFragmentVM by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val LOCATION_REQ_CODE = 10005
+    private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
 
@@ -39,38 +43,41 @@ class SavedCurrentLocationFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+   /*     locationCallback = object: LocationCallback(){
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                locationResult?.let {
+                    for (location in locationResult.locations){
+                        location?.let {
+                            Log.i("TAG", "onLocationResult: ${location.latitude.toString() + "//" + location.longitude.toString()}")
+                            showToast(location.latitude.toString() + "//" + location.longitude.toString())
+//                                calcul(it)
+                        }
+                    }
+                }
+            }
+        }*/
+
+
         init()
-        update()
+
     }
+
+
 
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun init(){
-        binding.getLocationBtn.setOnClickListener { getCurrentLocation() }
-/*        binding.getLocationBtn.setOnClickListener {
-            NotificationUtils.showRegularNotification(
-                context = requireContext(),
-                title = "hello",
-                message = "hello every one, please pay attention, you are in a way you shall not",
-                pendingIntent = PendingIntent.getActivity(
-                    requireActivity(),
-                    nextInt(0,9999)
-                    ,Intent(requireActivity(), MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    } ,0)
-            )
-        }*/
-    }
+        binding.saveBtn.setOnClickListener {
+    navigateTo( HomeFragmentDirections.actionHomeFragmentToMapFragment()) }
+       // binding.getLocationBtn.setOnClickListener { getCurrentLocation() }
+        binding.getLocationBtn.setOnClickListener {
+
+            val periodicWorkRequest = PeriodicWorkRequestBuilder<LocationWorker>(10, TimeUnit.SECONDS).addTag("tag").build()
+            WorkManager.getInstance().enqueue(periodicWorkRequest)
 
 
-    private fun update(){
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult ?: return
-                for (location in locationResult.locations){
-                 //update ur msg
-                    showToast(location.longitude.toString() + "//" + location.longitude.toString())
-                }
-            }
         }
     }
 
@@ -85,17 +92,38 @@ class SavedCurrentLocationFragment: BaseFragment() {
             return
         }
         else{
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-            fusedLocationClient.lastLocation.addOnSuccessListener { loc ->
-                if (loc != null)
-                    showToast(loc.latitude.toString() + "//" + loc.longitude.toString())
-                else
-                    showToast("null" + "")
 
-            }
+
+
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            locationRequest = LocationRequest.create()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.interval = 5000
+
+
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+
+
+
+
         }
 
+
     }
+
+/*    private fun calcul(newLocation: Location) {
+        val location: Location = Location("").apply {
+            latitude = 35.7609067
+            longitude = 51.4036601
+        }
+        if (LocationUtils.distanceInMeter(location,newLocation) > 10){
+            showRegularNotification()
+        }
+    }*/
 
 
     private fun requestLocationPermission() {
@@ -116,8 +144,6 @@ class SavedCurrentLocationFragment: BaseFragment() {
             getCurrentLocation()
         }
     }
-
-
 
 
     override fun onDestroyView() {

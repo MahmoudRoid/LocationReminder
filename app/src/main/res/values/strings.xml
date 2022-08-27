@@ -7,4 +7,5 @@
     <string name="get_location">Get Location</string>
     <string name="accept_locations_permission">Accept permissions to continue please</string>
     <string name="can_not_determine_location">We can not determine your location</string>
+    <string name="message">Messaage</string>
 </resources>

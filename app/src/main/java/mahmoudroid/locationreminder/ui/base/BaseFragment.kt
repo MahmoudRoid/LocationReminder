@@ -1,5 +1,7 @@
 package mahmoudroid.locationreminder.ui.base
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -11,6 +13,9 @@ import androidx.navigation.fragment.findNavController
 import mahmoudroid.locationreminder.R
 import mahmoudroid.locationreminder.ext.hideKeyboard
 import mahmoudroid.locationreminder.ext.navigateSafe
+import mahmoudroid.locationreminder.ui.MainActivity
+import mahmoudroid.locationreminder.util.NotificationUtils
+import kotlin.random.Random.Default.nextInt
 
 open class BaseFragment: Fragment() {
 
@@ -56,5 +61,24 @@ open class BaseFragment: Fragment() {
     // show message
     fun showToast(message: String){
         Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
+    }
+
+
+    // notification
+    fun showRegularNotification(
+        title: String = getString(R.string.title),
+        message: String = getString(R.string.message)
+    ){
+        NotificationUtils.showRegularNotification(
+            context = requireContext(),
+            title = title,
+            message = message,
+            pendingIntent = PendingIntent.getActivity(
+                requireActivity(),
+                nextInt(0,9999)
+                , Intent(requireActivity(), MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                } ,0)
+        )
     }
 }

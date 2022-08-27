@@ -33,6 +33,9 @@ class HomeFragment: BaseFragment() {
         changeStatusBarColor(R.color.colorPrimary)
         changeNotificationBarIconsColor(true)
         initPages()
+
+
+
     }
 
     private fun initPages() {
