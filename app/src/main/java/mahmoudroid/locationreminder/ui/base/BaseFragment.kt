@@ -69,7 +69,7 @@ open class BaseFragment: Fragment() {
         title: String = getString(R.string.title),
         message: String = getString(R.string.message)
     ){
-        NotificationUtils.showRegularNotification(
+        NotificationUtils.showNotification(
             context = requireContext(),
             title = title,
             message = message,

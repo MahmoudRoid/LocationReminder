@@ -4,6 +4,7 @@ import android.os.Bundle
 import dagger.hilt.android.AndroidEntryPoint
 import mahmoudroid.locationreminder.databinding.ActivityMainBinding
 import mahmoudroid.locationreminder.ui.base.BaseActivity
+import mahmoudroid.locationreminder.util.NotificationUtils
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -22,6 +23,10 @@ class MainActivity : BaseActivity() {
     private fun initUI() {
         changeNotificationBarIconsColor()
         changeStatusBarColor()
+
+
+        showRegularNotification("title","message for test")
+
     }
 
     override fun onDestroy() {

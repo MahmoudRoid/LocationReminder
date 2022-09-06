@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,7 @@ class SavedCurrentLocationFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-   /*     locationCallback = object: LocationCallback(){
+        locationCallback = object: LocationCallback(){
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult?.let {
@@ -53,12 +54,12 @@ class SavedCurrentLocationFragment: BaseFragment() {
                         location?.let {
                             Log.i("TAG", "onLocationResult: ${location.latitude.toString() + "//" + location.longitude.toString()}")
                             showToast(location.latitude.toString() + "//" + location.longitude.toString())
-//                                calcul(it)
+                            //                                calcul(it)
                         }
                     }
                 }
             }
-        }*/
+        }
 
 
         init()
@@ -70,19 +71,14 @@ class SavedCurrentLocationFragment: BaseFragment() {
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun init(){
         binding.saveBtn.setOnClickListener {
-    navigateTo( HomeFragmentDirections.actionHomeFragmentToMapFragment()) }
-       // binding.getLocationBtn.setOnClickListener { getCurrentLocation() }
-        binding.getLocationBtn.setOnClickListener {
-
-            val periodicWorkRequest = PeriodicWorkRequestBuilder<LocationWorker>(10, TimeUnit.SECONDS).addTag("tag").build()
-            WorkManager.getInstance().enqueue(periodicWorkRequest)
-
-
+            navigateTo( HomeFragmentDirections.actionHomeFragmentToMapFragment())
         }
+        binding.getLocationBtn.setOnClickListener { getCurrentLocation() }
     }
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation(){
+
         if (PermissionUtils.hasLocationPermission(requireContext()).not()){
             requestLocationPermission()
             return
@@ -93,22 +89,16 @@ class SavedCurrentLocationFragment: BaseFragment() {
         }
         else{
 
-
-
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
             locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.interval = 5000
-
 
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
             )
-
-
-
 
         }
 
