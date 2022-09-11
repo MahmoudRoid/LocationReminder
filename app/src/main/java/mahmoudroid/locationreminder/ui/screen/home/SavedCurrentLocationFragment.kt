@@ -1,6 +1,7 @@
 package mahmoudroid.locationreminder.ui.screen.home
 
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
@@ -14,12 +15,17 @@ import androidx.work.WorkManager
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import mahmoudroid.locationreminder.R
+import mahmoudroid.locationreminder.data.Constants
+import mahmoudroid.locationreminder.data.NotificationModel
 import mahmoudroid.locationreminder.databinding.FragmentSavedCurrentLocationBinding
+import mahmoudroid.locationreminder.service.ForegroundLocationService
+import mahmoudroid.locationreminder.ui.MainActivity
 import mahmoudroid.locationreminder.ui.base.BaseFragment
 import mahmoudroid.locationreminder.util.LocationUtils
 import mahmoudroid.locationreminder.util.PermissionUtils
 import mahmoudroid.locationreminder.workmanager.LocationWorker
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class SavedCurrentLocationFragment: BaseFragment() {
@@ -46,7 +52,7 @@ class SavedCurrentLocationFragment: BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        locationCallback = object: LocationCallback(){
+   /*     locationCallback = object: LocationCallback(){
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
                 locationResult?.let {
@@ -59,7 +65,7 @@ class SavedCurrentLocationFragment: BaseFragment() {
                     }
                 }
             }
-        }
+        }*/
 
 
         init()
@@ -89,7 +95,23 @@ class SavedCurrentLocationFragment: BaseFragment() {
         }
         else{
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            val intent = Intent(requireContext(), ForegroundLocationService::class.java)
+            intent.putExtra(Constants.LOCATION_SERVICE_NOTIFICATION_MODEL, NotificationModel(
+                getString(R.string.location_service),
+                getString(R.string.service_is_running),
+                stopMessage = getString(R.string.stop_service),
+                pendingIntent = PendingIntent.getActivity(
+                    requireActivity(),
+                    Random.nextInt(0, 9999)
+                    , Intent(requireActivity(), MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    } ,0)
+            ))
+
+            requireActivity().startService(intent)
+
+
+    /*        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
             locationRequest = LocationRequest.create()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             locationRequest.interval = 5000
@@ -98,7 +120,7 @@ class SavedCurrentLocationFragment: BaseFragment() {
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
-            )
+            )*/
 
         }
 

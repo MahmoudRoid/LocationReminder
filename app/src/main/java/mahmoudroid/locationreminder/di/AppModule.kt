@@ -1,8 +1,11 @@
 package mahmoudroid.locationreminder.di
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import at.favre.lib.armadillo.Armadillo
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +31,15 @@ object AppModule {
     fun provideSharedPreferences(appContext: Context): SharedPreferences {
         return Armadillo.create(appContext, "locationReminder").encryptionFingerprint(appContext).build()
     }
+
+    @Provides
+    @Singleton
+    fun provideGoogleApiAvailability() = GoogleApiAvailability.getInstance()
+
+    @Provides
+    @Singleton
+    fun provideFusedLocationProviderClient(
+        application: Application
+    ) = LocationServices.getFusedLocationProviderClient(application)
 
 }

@@ -8,4 +8,7 @@
     <string name="accept_locations_permission">Accept permissions to continue please</string>
     <string name="can_not_determine_location">We can not determine your location</string>
     <string name="message">Messaage</string>
+    <string name="stop_service">stop service</string>
+    <string name="service_is_running">service is running</string>
+    <string name="location_service">Location Service</string>
 </resources>

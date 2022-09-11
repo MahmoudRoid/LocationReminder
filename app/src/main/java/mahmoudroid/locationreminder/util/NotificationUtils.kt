@@ -13,7 +13,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.LifecycleService
 import mahmoudroid.locationreminder.R
+import mahmoudroid.locationreminder.data.NotificationModel
+import mahmoudroid.locationreminder.ui.MainActivity
 import java.util.*
 
 object NotificationUtils {
@@ -23,7 +26,8 @@ object NotificationUtils {
     private lateinit var notificationManager: NotificationManager
     private lateinit var notificationChannel: NotificationChannel
     private const val channelId = "channelId"
-    private const val description = "description"
+    private const val channelName = "channelName"
+
 
     fun showNotification(
         context: Context,
@@ -38,7 +42,7 @@ object NotificationUtils {
 
         // checking if android version is greater than oreo(API 26) or not
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel = NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
+            notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
             notificationChannel.enableLights(true)
             notificationChannel.lightColor = Color.GREEN
             notificationChannel.enableVibration(true)
@@ -63,6 +67,35 @@ object NotificationUtils {
         }
 
         notificationManager.notify(Random().nextInt(), builder.build())
+
+    }
+
+    fun buildNotificationForService(context: Context, notificationModel: NotificationModel): Notification{
+        fun createNotificationChannel() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val notificationChannel = NotificationChannel(
+                    channelId,
+                    channelId,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+                val manager = context.getSystemService(LifecycleService.NOTIFICATION_SERVICE) as NotificationManager
+                manager.createNotificationChannel(notificationChannel)
+            }
+        }
+
+        createNotificationChannel()
+
+        return NotificationCompat.Builder(context, channelId)
+            .setContentTitle(notificationModel.title)
+            .setContentText(notificationModel.message)
+            .setContentIntent(notificationModel.pendingIntent)
+            .setSmallIcon(notificationModel.smallIcon)
+            .addAction(notificationModel.smallIcon, notificationModel.stopMessage, notificationModel.stopIntent)
+            .setOngoing(true)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(notificationModel.priority)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .build()
 
     }
 

@@ -11,6 +11,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
+import mahmoudroid.locationreminder.data.Constants.DISTANCE_THRESHOLD
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -57,14 +58,14 @@ object LocationUtils {
             }
     }
 
-    fun distanceInMeter(location1: Location, location2: Location): Double{
+    fun distanceInMeter(savedLocation: Location, currentLocation: Location): Double{
 
         fun deg2rad(deg: Double) = (deg * Math.PI / 180.0)
 
-        val dLat = deg2rad(location2.latitude-location1.latitude)
-        val dLon = deg2rad(location2.longitude-location1.longitude)
+        val dLat = deg2rad(currentLocation.latitude-savedLocation.latitude)
+        val dLon = deg2rad(currentLocation.longitude-savedLocation.longitude)
         val a = sin(dLat/2) * sin(dLat/2) +
-                cos(deg2rad(location1.latitude)) * cos(deg2rad(location2.latitude)) *
+                cos(deg2rad(savedLocation.latitude)) * cos(deg2rad(currentLocation.latitude)) *
                 sin(dLon/2) * sin(dLon/2)
         val c = 2 * atan2(sqrt(a), sqrt(1-a))
         val d = 6371 * c // Distance in km
@@ -72,4 +73,10 @@ object LocationUtils {
         Log.i("TAG", "distanceInMeter: ${(d * 1000).toString().take(5)}")
         return d * 1000
     }
+
+
+    fun hasUserLeftCurrentLocation(savedLocation: Location, currentLocation: Location) = distanceInMeter(savedLocation,currentLocation) > DISTANCE_THRESHOLD
+
+    fun hasUserArrivedToDestination(destinationLocation: Location, currentLocation: Location) = distanceInMeter(destinationLocation,currentLocation) < DISTANCE_THRESHOLD
+
 }

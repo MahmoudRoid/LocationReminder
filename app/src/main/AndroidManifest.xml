@@ -35,6 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".service.ForegroundLocationService"
+            android:exported="false"/>
+
+
     </application>
 
 </manifest>
