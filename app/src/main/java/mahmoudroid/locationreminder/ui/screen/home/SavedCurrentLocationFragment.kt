@@ -9,11 +9,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import mahmoudroid.locationreminder.R
 import mahmoudroid.locationreminder.data.Constants
 import mahmoudroid.locationreminder.data.NotificationModel
@@ -32,11 +35,8 @@ class SavedCurrentLocationFragment: BaseFragment() {
 
     private var _binding: FragmentSavedCurrentLocationBinding? = null
     private val binding get() = _binding!!
-    //private val viewModel: SavedCurrentLocationFragmentVM by viewModels()
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val viewModel: SavedCurrentLocationFragmentVM by viewModels()
     private val LOCATION_REQ_CODE = 10005
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
 
 
     override fun onCreateView(
@@ -50,40 +50,29 @@ class SavedCurrentLocationFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-   /*     locationCallback = object: LocationCallback(){
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                locationResult?.let {
-                    for (location in locationResult.locations){
-                        location?.let {
-                            Log.i("TAG", "onLocationResult: ${location.latitude.toString() + "//" + location.longitude.toString()}")
-                            showToast(location.latitude.toString() + "//" + location.longitude.toString())
-                            //                                calcul(it)
-                        }
-                    }
-                }
-            }
-        }*/
-
-
         init()
-
     }
-
 
 
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun init(){
-        binding.saveBtn.setOnClickListener {
-            navigateTo( HomeFragmentDirections.actionHomeFragmentToMapFragment())
+
+        binding.getLocationBtn.setOnClickListener {  }
+
+        binding.enableService.setOnClickListener {
+            if (viewModel.isLocationServiceRunning(requireContext())){
+                // stop service
+                disableLocationService()
+            }
+            else{
+                // start service
+                enableLocationService()
+            }
         }
-        binding.getLocationBtn.setOnClickListener { getCurrentLocation() }
     }
 
     @SuppressLint("MissingPermission")
-    private fun getCurrentLocation(){
+    private fun enableLocationService(){
 
         if (PermissionUtils.hasLocationPermission(requireContext()).not()){
             requestLocationPermission()
@@ -99,7 +88,6 @@ class SavedCurrentLocationFragment: BaseFragment() {
             intent.putExtra(Constants.LOCATION_SERVICE_NOTIFICATION_MODEL, NotificationModel(
                 getString(R.string.location_service),
                 getString(R.string.service_is_running),
-                stopMessage = getString(R.string.stop_service),
                 pendingIntent = PendingIntent.getActivity(
                     requireActivity(),
                     Random.nextInt(0, 9999)
@@ -110,38 +98,22 @@ class SavedCurrentLocationFragment: BaseFragment() {
 
             requireActivity().startService(intent)
 
-
-    /*        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-            locationRequest = LocationRequest.create()
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 5000
-
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )*/
+            viewModel.setLocationServiceStatus(true)
 
         }
 
 
     }
 
-/*    private fun calcul(newLocation: Location) {
-        val location: Location = Location("").apply {
-            latitude = 35.7609067
-            longitude = 51.4036601
-        }
-        if (LocationUtils.distanceInMeter(location,newLocation) > 10){
-            showRegularNotification()
-        }
-    }*/
-
+    private fun disableLocationService(){
+        requireActivity().stopService(Intent(requireContext(), ForegroundLocationService::class.java))
+        viewModel.setLocationServiceStatus(false)
+    }
 
     private fun requestLocationPermission() {
         PermissionUtils.requestForLocationPermission(requireActivity(),object : PermissionUtils.PermissionUtilsListener{
             override fun onGranted() {
-                getCurrentLocation()
+                enableLocationService()
             }
 
             override fun onDenied() {
@@ -153,10 +125,32 @@ class SavedCurrentLocationFragment: BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         super.onActivityResult(requestCode, resultCode, intent)
         if (requestCode == LOCATION_REQ_CODE) {
-            getCurrentLocation()
+            enableLocationService()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        initObserver()
+        viewModel.getLocationServiceStatus()
+    }
+
+    private fun initObserver() {
+        lifecycleScope.launch {
+            viewModel.getLocationServiceStatus().collect{
+                binding.enableService.apply {
+
+                    if (it){
+                        text = getString(R.string.stop_service)
+                    }
+                    else{
+                        text = getString(R.string.start_service)
+                    }
+
+                }
+            }
+        }
+    }
 
     override fun onDestroyView() {
         _binding = null

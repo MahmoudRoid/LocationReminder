@@ -70,32 +70,95 @@ object NotificationUtils {
 
     }
 
+    fun showNotification(
+        context: Context,
+        notificationModel: NotificationModel?
+    ){
+        notificationManager =  context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationModel?.let {
+            // checking if android version is greater than oreo(API 26) or not
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                notificationChannel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
+                notificationChannel.enableLights(true)
+                notificationChannel.lightColor = Color.GREEN
+                notificationChannel.enableVibration(true)
+                notificationManager.createNotificationChannel(notificationChannel)
+
+                builder = NotificationCompat.Builder(context, channelId)
+                    .setContentTitle(it.title)
+                    .setContentText(it.message)
+                    .setStyle(NotificationCompat.BigTextStyle().bigText(it.message))
+                    .setPriority(it.priority)
+                    .setSmallIcon(it.smallIcon)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_background))
+                    .setContentIntent(it.pendingIntent)
+            } else {
+                builder = NotificationCompat.Builder(context)
+                    .setContentTitle(it.title).setContentText(it.message)
+                    .setStyle(NotificationCompat.BigTextStyle().bigText(it.message))
+                    .setPriority(it.priority)
+                    .setSmallIcon(R.drawable.ic_launcher_background)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_background))
+                    .setContentIntent(it.pendingIntent)
+            }
+
+            notificationManager.notify(Random().nextInt(), builder.build())
+        }
+
+    }
+
     fun buildNotificationForService(context: Context, notificationModel: NotificationModel): Notification{
+
         fun createNotificationChannel() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notificationChannel = NotificationChannel(
                     channelId,
                     channelId,
                     NotificationManager.IMPORTANCE_DEFAULT
-                )
+                ).also {
+                    it.enableVibration(true)
+                }
                 val manager = context.getSystemService(LifecycleService.NOTIFICATION_SERVICE) as NotificationManager
                 manager.createNotificationChannel(notificationChannel)
             }
         }
 
-        createNotificationChannel()
+        // checking if android version is greater than oreo(API 26) or not
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-        return NotificationCompat.Builder(context, channelId)
-            .setContentTitle(notificationModel.title)
-            .setContentText(notificationModel.message)
-            .setContentIntent(notificationModel.pendingIntent)
-            .setSmallIcon(notificationModel.smallIcon)
-            .addAction(notificationModel.smallIcon, notificationModel.stopMessage, notificationModel.stopIntent)
-            .setOngoing(true)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setPriority(notificationModel.priority)
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .build()
+            createNotificationChannel()
+
+            return NotificationCompat.Builder(context, channelId)
+                .setContentTitle(notificationModel.title)
+                .setContentText(notificationModel.message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationModel.message))
+                .setPriority(notificationModel.priority)
+                .setSmallIcon(notificationModel.smallIcon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.resources, notificationModel.smallIcon))
+                .setContentIntent(notificationModel.pendingIntent)
+                .addAction(notificationModel.smallIcon, notificationModel.stopMessage, notificationModel.stopIntent)
+                .setOngoing(true)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .build()
+
+        } else {
+            return NotificationCompat.Builder(context)
+                .setWhen(0)
+                .setContentTitle(notificationModel.title)
+                .setContentText(notificationModel.message)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(notificationModel.message))
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setSmallIcon(notificationModel.smallIcon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.resources, notificationModel.smallIcon))
+                .setContentIntent(notificationModel.pendingIntent)
+                .addAction(notificationModel.smallIcon, notificationModel.stopMessage, notificationModel.stopIntent)
+                .setOngoing(true)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .build()
+        }
 
     }
 

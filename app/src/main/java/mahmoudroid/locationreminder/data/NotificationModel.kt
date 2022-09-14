@@ -8,8 +8,8 @@ import mahmoudroid.locationreminder.R
 
 @Parcelize
 data class NotificationModel(
-    val title: String,
-    val message: String,
+    var title: String,
+    var message: String,
     val smallIcon: Int = R.mipmap.ic_launcher,
     val priority: Int = NotificationCompat.PRIORITY_HIGH,
     val stopMessage: String = "",

@@ -72,8 +72,10 @@ class ForegroundLocationService: LifecycleService() {
         startForeground(1, NotificationUtils.buildNotificationForService(this, NotificationModel(
             title = getString(R.string.location_service),
             message = getString(R.string.service_is_running),
-            pendingIntent = notificationModel!!.pendingIntent
-        )
+            stopMessage = getString(R.string.stop_service),
+            pendingIntent = notificationModel!!.pendingIntent,
+            stopIntent = notificationModel!!.stopIntent
+            )
         ))
 
         return START_STICKY
@@ -87,7 +89,7 @@ class ForegroundLocationService: LifecycleService() {
 
     }
 
-    val savedCurrentLocation: Location = Location("").apply {
+    private val sampleLocation: Location = Location("").apply {
         latitude = 35.7609067
         longitude = 51.4036601
     }
@@ -96,25 +98,18 @@ class ForegroundLocationService: LifecycleService() {
         location?.let {
 
             lifecycleScope.launch(Dispatchers.Main){
-                Toast.makeText(this@ForegroundLocationService, LocationUtils.distanceInMeter(savedCurrentLocation, it).toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ForegroundLocationService, LocationUtils.distanceInMeter(sampleLocation, it).toString(), Toast.LENGTH_SHORT).show()
             }
 
-            if (LocationUtils.hasUserLeftCurrentLocation(savedCurrentLocation, it) ){
+            if (LocationUtils.hasUserLeftCurrentLocation(sampleLocation, it) ){
 
                 stopForegroundService()
 
                 NotificationUtils.showNotification(
                     this,
-                    "eyval",
-                    "residim",
-                    pendingIntent = PendingIntent.getActivity(
-                        this,
-                        Random.nextInt(0, 9999)
-                        , Intent(this, MainActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        } ,0)
-
+                    notificationModel
                 )
+
             }
         }
     }
