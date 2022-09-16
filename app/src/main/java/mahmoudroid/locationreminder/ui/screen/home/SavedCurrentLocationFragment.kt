@@ -51,13 +51,20 @@ class SavedCurrentLocationFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
+        handleResult()
     }
 
+    private fun handleResult(){
+        // todo: get callback
+    }
 
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun init(){
 
-        binding.getLocationBtn.setOnClickListener {  }
+        binding.getLocationBtn.setOnClickListener {
+            // show map
+            navigateTo(HomeFragmentDirections.actionHomeFragmentToMapFragment())
+        }
 
         binding.enableService.setOnClickListener {
             if (viewModel.isLocationServiceRunning(requireContext())){
@@ -86,8 +93,8 @@ class SavedCurrentLocationFragment: BaseFragment() {
 
             val intent = Intent(requireContext(), ForegroundLocationService::class.java)
             intent.putExtra(Constants.LOCATION_SERVICE_NOTIFICATION_MODEL, NotificationModel(
-                getString(R.string.location_service),
-                getString(R.string.service_is_running),
+                binding.titleEdt.text.toString(),
+                binding.descriptionEdt.text.toString(),
                 pendingIntent = PendingIntent.getActivity(
                     requireActivity(),
                     Random.nextInt(0, 9999)

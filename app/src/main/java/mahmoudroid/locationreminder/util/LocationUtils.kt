@@ -74,7 +74,6 @@ object LocationUtils {
         return d * 1000
     }
 
-
     fun hasUserLeftCurrentLocation(savedLocation: Location, currentLocation: Location) = distanceInMeter(savedLocation,currentLocation) > DISTANCE_THRESHOLD
 
     fun hasUserArrivedToDestination(destinationLocation: Location, currentLocation: Location) = distanceInMeter(destinationLocation,currentLocation) < DISTANCE_THRESHOLD

@@ -3,6 +3,7 @@ package mahmoudroid.locationreminder.data
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -24,6 +25,7 @@ class LocationRepository @Inject constructor(
 
     @SuppressLint("MissingPermission") // Only called when holding location permission.
     fun startLocationUpdates() {
+        Log.i("TAG", "startLocationUpdates: ")
         val request = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             interval = 10_000 // 10 seconds
@@ -44,6 +46,7 @@ class LocationRepository @Inject constructor(
 
     private inner class Callback : LocationCallback() {
         override fun onLocationResult(result: LocationResult) {
+            Log.i("TAG", "onLocationResult: $result")
             _lastLocation.value = result.lastLocation
         }
     }

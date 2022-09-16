@@ -5,13 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
+    <mahmoudroid.locationreminder.ui.base.BaseMapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/choose_location_btn_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:text="@string/choose_location"
+        android:textColor="@color/white"
+        app:cornerRadius="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/currentLocationBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/ic_live_location"
+        app:borderWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/choose_location_btn_map"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/choose_location_btn_map" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_pin_map"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
