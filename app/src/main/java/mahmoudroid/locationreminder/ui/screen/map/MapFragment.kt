@@ -15,8 +15,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import mahmoudroid.locationreminder.R
+import mahmoudroid.locationreminder.data.Constants.MAP_LOCATION
 import mahmoudroid.locationreminder.data.LocationRepository
 import mahmoudroid.locationreminder.databinding.FragmentMapBinding
+import mahmoudroid.locationreminder.ext.setNavigationResult
 import mahmoudroid.locationreminder.ui.base.BaseFragment
 import mahmoudroid.locationreminder.ui.base.BaseMapView
 import mahmoudroid.locationreminder.util.LocationUtils
@@ -71,9 +73,8 @@ class MapFragment: BaseFragment(), BaseMapView.IMapViewCallBacks{
         }
 
         binding.chooseLocationBtnMap.setOnClickListener {
-            showToast(binding.mapView.getMapCenter().toString())
-            // return below
-            //binding.mapView.getMapCenter()
+            setNavigationResult(MAP_LOCATION, binding.mapView.getMapCenter().toString())
+            onBackPressed()
         }
     }
 

@@ -20,13 +20,11 @@ class SavedCurrentLocationFragmentVM @Inject constructor(
 
     var locationResult: Location? = null
 
-
     private val _locationServiceStatus = MutableStateFlow(false)
     fun getLocationServiceStatus() = _locationServiceStatus
     fun setLocationServiceStatus(status: Boolean){
         viewModelScope.launch { _locationServiceStatus.emit(status) }
     }
-
 
     fun isLocationServiceRunning(context: Context): Boolean {
         val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?

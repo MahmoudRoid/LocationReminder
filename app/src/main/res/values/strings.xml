@@ -4,7 +4,7 @@
     <string name="destinationLocation">Destination Loc</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
-    <string name="get_location">Get Location</string>
+    <string name="get_location">Get Location From Map</string>
     <string name="accept_locations_permission">Accept permissions to continue please</string>
     <string name="can_not_determine_location">We can not determine your location</string>
     <string name="message">Messaage</string>
@@ -14,4 +14,5 @@
     <string name="stop_service">Stop Service</string>
     <string name="choose_location">Choose Location</string>
     <string name="not_developed_yet">Destination Settings Not Developed yet</string>
+    <string name="currentLocationIsNotSet">Current location is not set</string>
 </resources>

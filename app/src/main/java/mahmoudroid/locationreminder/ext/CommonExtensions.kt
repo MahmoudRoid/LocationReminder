@@ -68,7 +68,7 @@ fun Activity.isSoftKeyboardShown() : Boolean {
 
 fun <T> Fragment.getNavigationResult(key: String = "result") = NavHostFragment.findNavController(this).currentBackStackEntry?.savedStateHandle?.getLiveData<T>(key)
 fun <T> Fragment.removeNavigationResult(key: String = "result") = NavHostFragment.findNavController(this).currentBackStackEntry?.savedStateHandle?.remove<T>(key)
-fun <T> Fragment.setNavigationResult(result: T, key: String = "result") { NavHostFragment.findNavController(this).previousBackStackEntry?.savedStateHandle?.set(key, result) }
+fun <T> Fragment.setNavigationResult(key: String = "result", result: T) { NavHostFragment.findNavController(this).previousBackStackEntry?.savedStateHandle?.set(key, result) }
 
 fun NavController.navigateSafe(direction: NavDirections) { currentDestination?.getAction(direction.actionId)?.let { navigate(direction) } }
 fun NavController.navigateSafe(direction: NavDirections, navOptions: NavOptions?) { currentDestination?.getAction(direction.actionId)?.let { navigate(direction.actionId, direction.arguments, navOptions) }}
