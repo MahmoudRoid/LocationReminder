@@ -13,4 +13,5 @@
     <string name="start_service">Start Service</string>
     <string name="stop_service">Stop Service</string>
     <string name="choose_location">Choose Location</string>
+    <string name="not_developed_yet">Destination Settings Not Developed yet</string>
 </resources>

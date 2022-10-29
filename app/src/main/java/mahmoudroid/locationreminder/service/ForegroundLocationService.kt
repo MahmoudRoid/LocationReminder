@@ -102,14 +102,11 @@ class ForegroundLocationService: LifecycleService() {
             }
 
             if (LocationUtils.hasUserLeftCurrentLocation(sampleLocation, it) ){
-
                 stopForegroundService()
-
                 NotificationUtils.showNotification(
                     this,
                     notificationModel
                 )
-
             }
         }
     }
